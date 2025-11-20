@@ -1,0 +1,71 @@
+/* Modified code by ScottyD www.youtube.com/channel/UCLx3Gi9s_5uvVwURRIsWXKg
+ * Adapted for dual MQ135 sensors
+ * 
+ * Carbon Dioxide Parts Per Million Meter
+ * CO2PPM
+ 
+ * Original code by www.youtube.com/c/learnelectronics
+/*
+ * Atmospheric CO2 Level..............400ppm
+ * Average indoor co2.............350-450ppm
+ * Maxiumum acceptable co2...........1000ppm
+ * Dangerous co2 levels.............>2000ppm
+ */
+
+#define anInput1    A0
+#define anInput2    A1
+
+#define co2Zero1    55                        // CO2 0 para sensor 1
+#define co2Zero2    55                        // CO2 0 para sensor 2
+
+void setup() 
+{
+  pinMode(anInput1, INPUT);                   // MQ135 sensor 1
+  pinMode(anInput2, INPUT);                   // MQ135 sensor 2
+  Serial.begin(9600);                         // Serial debug
+}
+  
+void loop() 
+{
+  int co2now1[10];
+  int co2raw1 = 0;
+  int co2ppm1 = 0;
+  int zzz1 = 0;
+  int co2now2[10];
+  int co2raw2 = 0;
+  int co2ppm2 = 0;
+  int zzz2 = 0;
+  
+  for (int x = 0; x < 10; x++)
+  {                   
+    co2now1[x] = analogRead(anInput1);
+    co2now2[x] = analogRead(anInput2);
+    delay(200);
+  }
+  
+  for (int x = 0; x < 10; x++)
+  {                     
+    zzz1 = zzz1 + co2now1[x];  
+  }
+  
+  for (int x = 0; x < 10; x++)
+  {                     
+    zzz2 = zzz2 + co2now2[x];  
+  }
+
+  co2raw1 = zzz1 / 10;
+  co2ppm1 = co2raw1 - co2Zero1;
+  
+  co2raw2 = zzz2 / 10;
+  co2ppm2 = co2raw2 - co2Zero2;
+  
+  Serial.print("Sensor 1 - CO2=");
+  Serial.print(co2ppm1);
+  Serial.println(" PPM");
+  
+  Serial.print("Sensor 2 - CO2=");
+  Serial.print(co2ppm2);
+  Serial.println(" PPM");
+ 
+  delay(50);             
+}
